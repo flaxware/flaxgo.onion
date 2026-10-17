@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FlaxGo.onion - a simple way to search deep into the web.">
+  <meta name="theme-color" content="#0d0817">
+  <title>FlaxGo.onion | Flaxware</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #0d0817;
+      --purple: #9b5cff;
+      --purple-light: #c49aff;
+      --text: #f7f1ff;
+      --muted: #b9a9c9;
+      --border: rgba(196, 154, 255, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 80% 15%, rgba(124, 53, 255, 0.14), transparent 30rem),
+        var(--background);
+      color: var(--text);
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    .site-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .navbar {
+      display: flex;
+      width: min(1160px, 100%);
+      min-height: 82px;
+      align-items: center;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* Simple wordmark, matching the original example */
+    .logo {
+      color: var(--muted);
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: -0.06em;
+      text-decoration: none;
+    }
+
+    .logo span {
+      color: var(--purple-light);
+    }
+
+    main {
+      display: grid;
+      min-height: 100vh;
+      place-items: center;
+      padding: 100px 20px 40px;
+    }
+
+    .search-content {
+      width: min(720px, 100%);
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin-bottom: 12px;
+      color: var(--purple-light);
+      font-family: "DM Mono", monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+    }
+
+    h1 {
+      margin-bottom: 34px;
+      font-size: clamp(3.5rem, 10vw, 6.5rem);
+      letter-spacing: -0.09em;
+      line-height: 1;
+    }
+
+    h1 span {
+      color: var(--purple-light);
+    }
+
+    .search-panel {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(33, 18, 55, 0.72);
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(12px);
+      text-align: left;
+    }
+
+    .search-form {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 7px 8px 7px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9px;
+      background: rgba(13, 8, 23, 0.72);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-form:focus-within {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 4px rgba(155, 92, 255, 0.14);
+    }
+
+    .search-icon {
+      flex: 0 0 auto;
+      color: var(--purple-light);
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .search-form input {
+      width: 100%;
+      min-width: 0;
+      padding: 10px 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .search-form input::placeholder {
+      color: #897a9b;
+    }
+
+    .search-button {
+      flex: 0 0 auto;
+      padding: 10px 18px;
+      border: 0;
+      border-radius: 7px;
+      background: linear-gradient(110deg, #8d4cff, #c16dff);
+      color: white;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 600;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .search-button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+
+    .engine-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .engine-label {
+      margin-right: 4px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .engine {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+      transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .engine:hover {
+      border-color: var(--purple);
+      color: var(--text);
+    }
+
+    .engine[aria-pressed="true"] {
+      border-color: rgba(196, 154, 255, 0.55);
+      background: rgba(155, 92, 255, 0.17);
+      color: var(--purple-light);
+    }
+
+    .search-hint {
+      margin: 12px 4px 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible {
+      outline: 3px solid var(--purple-light);
+      outline-offset: 4px;
+    }
+
+    @media (max-width: 480px) {
+      .navbar {
+        min-height: 72px;
+        padding-inline: 20px;
+      }
+
+      .search-form {
+        gap: 8px;
+        padding-left: 11px;
+      }
+
+      .search-button {
+        padding-inline: 13px;
+      }
+
+      .engine-label {
+        flex-basis: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="navbar container">
+
+      <a class="logo" href="https://flaxware.github.io/" aria-label="Flaxware home">
+        <img src="assets/logo.svg" alt="💎" style="height: 1em; width: auto; vertical-align: middle;">
+        <span>flaxware<span>.</span></span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="search-content" aria-labelledby="page-title">
+      <p class="eyebrow">.onion SEARCH ENGINE BY FLAXWARE</p>
+      <h1 id="page-title">Flax<span>Go</span></h1>
+
+      <div class="search-panel">
+        <form id="search-form" class="search-form" role="search">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input
+            id="query"
+            type="search"
+            name="q"
+            placeholder="Search the web…"
+            aria-label="Search the web"
+            autocomplete="off"
+            autofocus
+          >
+          <button class="search-button" type="submit">Search</button>
+        </form>
+
+        <div class="engine-row" role="group" aria-label="Choose a search engine">
+          <span class="engine-label">Search with</span>
+          <button class="engine" type="button" data-engine="duckduckgo" aria-pressed="true">
+            DuckDuckGo
+          </button>
+          <button class="engine" type="button" data-engine="ahmia" aria-pressed="false">
+            Ahmia
+          </button>
+          <button class="engine" type="button" data-engine="reddit" aria-pressed="false">
+            Reddit
+          </button>
+        </div>
+
+        <p class="search-hint">Choose an engine, type a query, and press Enter.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+  const form = document.querySelector("#search-form");
+  const input = document.querySelector("#query");
+  const engineButtons = [...document.querySelectorAll(".engine")];
+
+  let selectedEngine = "duckduckgo";
+
+  engineButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      selectedEngine = button.dataset.engine;
+
+      engineButtons.forEach((item) => {
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+
+      input.focus();
+    });
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const query = input.value.trim();
+
+    if (!query) {
+      input.focus();
+      return;
+    }
+
+    const searchUrls = {
+      duckduckgo: "https://duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion/?q=",
+      ahmia: "https://ahmia.fi/search/?q=",
+      reddit: "https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion/search/?q="
+    };
+
+    window.location.assign(
+      searchUrls[selectedEngine] + encodeURIComponent(query)
+    );
+  });
+
+  // Read a query passed in the page URL by Firefox's address bar.
+  const params = new URLSearchParams(window.location.search);
+  const addressBarQuery = params.get("q");
+
+  if (addressBarQuery) {
+    input.value = addressBarQuery;
+    form.requestSubmit();
+  }
+</script>
+
+</body>
+</html>
